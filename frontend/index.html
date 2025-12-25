@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>KAOKAB5GC Ops Console</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header>
+    <h1>KAOKAB5GC – Operations Console</h1>
+    <div id="meta">
+      <span id="lastUpdate">Last update: --</span>
+    </div>
+  </header>
+
+  <main class="grid">
+
+    <!-- Network Functions -->
+    <section class="card">
+      <h2>Network Functions</h2>
+      <div id="nfList">
+        <div class="placeholder">Loading NF status…</div>
+      </div>
+    </section>
+
+    <!-- RAN Connections -->
+    <section class="card">
+      <h2>RAN Connections</h2>
+      <div id="ranList">
+        <div class="placeholder">No gNB / eNB detected</div>
+      </div>
+    </section>
+
+    <!-- Subscribers -->
+    <section class="card">
+      <h2>Provisioned Subscribers</h2>
+      <div id="subscriberList">
+        <div class="placeholder">Loading subscribers…</div>
+      </div>
+    </section>
+
+    <!-- Actions -->
+    <section class="card full">
+      <h2>Actions</h2>
+      <button id="applyConfig">Apply Configuration (777)</button>
+      <pre id="actionOutput"></pre>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>KAOKAB5GC © Production Ops</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
