@@ -48,12 +48,23 @@
 
       <!-- Network Functions -->
       <section class="card">
-        <h2>Network Functions</h2>
-        <div id="nfList">
-          <div class="placeholder">Loading NF status…</div>
-        </div>
-      </section>
+  <h2>Network Functions</h2>
 
+  <div class="nf-group">
+    <div class="nf-group-title">Infrastructure</div>
+    <div id="nfList-infra"></div>
+  </div>
+
+  <div class="nf-group">
+    <div class="nf-group-title">5G Core – Control Plane</div>
+    <div id="nfList-cp"></div>
+  </div>
+
+  <div class="nf-group">
+    <div class="nf-group-title">5G Core – User Plane</div>
+    <div id="nfList-up"></div>
+  </div>
+</section>
       <!-- RAN Connections -->
       <section class="card">
         <h2>RAN Connections</h2>
