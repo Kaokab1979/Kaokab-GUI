@@ -80,36 +80,42 @@ if (!nfs.length) {
   });
 }
 
-  /* ---------- RAN Connections ---------- */
-  ranList.innerHTML = "";
+ /* ---------- RAN Connections ---------- */
+ranList.innerHTML = "";
 
-  const gnbs = data.ran?.gnb_ngap_38412 || [];
-  const enbs = data.ran?.enb_s1ap_36412 || [];
+const gnbs = data.ran?.gnb_ngap_38412 || [];
+const enbs = data.ran?.enb_s1ap_36412 || [];
 
-  if (!gnbs.length && !enbs.length) {
-    ranList.innerHTML =
-      `<div class="placeholder">No gNB / eNB connected</div>`;
-  }
+if (!gnbs.length && !enbs.length) {
+  ranList.innerHTML =
+    `<div class="placeholder">No gNB / eNB connected</div>`;
+}
 
-  gnbs.forEach((ip) => {
-    const row = document.createElement("div");
-    row.className = "row";
-    row.innerHTML = `
-      <span>gNB ${escapeHtml(ip)}</span>
-      <span class="badge green">CONNECTED</span>
-    `;
-    ranList.appendChild(row);
-  });
+/* gNBs (objects: { ip, last_seen }) */
+gnbs.forEach((g) => {
+  const row = document.createElement("div");
+  row.className = "row";
 
-  enbs.forEach((ip) => {
-    const row = document.createElement("div");
-    row.className = "row";
-    row.innerHTML = `
-      <span>eNB ${escapeHtml(ip)}</span>
-      <span class="badge green">CONNECTED</span>
-    `;
-    ranList.appendChild(row);
-  });
+  const ip = g.ip ?? "unknown";
+
+  row.innerHTML = `
+    <span>gNB ${escapeHtml(ip)}</span>
+    <span class="badge green">CONNECTED</span>
+  `;
+
+  ranList.appendChild(row);
+});
+
+/* eNBs (still empty / future) */
+enbs.forEach((ip) => {
+  const row = document.createElement("div");
+  row.className = "row";
+  row.innerHTML = `
+    <span>eNB ${escapeHtml(ip)}</span>
+    <span class="badge green">CONNECTED</span>
+  `;
+  ranList.appendChild(row);
+});
 
   /* ---------- Subscribers ---------- */
   subscriberList.innerHTML = "";
