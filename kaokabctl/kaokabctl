@@ -1,5 +1,51 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "[KAOKABCTL] Controller loaded OK"
-echo "This is a placeholder. Logic will be added step by step."
+# KAOKABCTL v0.1 – minimal status JSON for GUI
+# Step 1: show NF status (systemd)
+# Step 2+: subscribers + RAN will be added later
+
+NFS=(
+  mongod
+  open5gs-nrfd
+  open5gs-scpd
+  open5gs-amfd
+  open5gs-smfd
+  open5gs-upfd
+  open5gs-udrd
+  open5gs-udmd
+  open5gs-ausfd
+  open5gs-pcfd
+  open5gs-nssfd
+  open5gs-bsfd
+  open5gs-seppd
+  open5gs-mmed
+  open5gs-hssd
+  open5gs-sgwcd
+  open5gs-sgwud
+  open5gs-pcrfd
+)
+
+cmd_status() {
+  echo '{'
+  echo '  "ts": "'"$(date -Is)"'",'
+  echo '  "nfs": ['
+
+  first=1
+  for s in "${NFS[@]}"; do
+    [[ $first -eq 1 ]] || echo '    ,'
+    first=0
+    active="$(systemctl is-active "$s" 2>/dev/null || echo "unknown")"
+    echo '    { "name": "'"$s"'", "active": "'"$active"'" }'
+  done
+
+  echo '  ],'
+  echo '  "ran": { "gnb_ngap_38412": [], "enb_s1ap_36412": [] },'
+  echo '  "subscribers": []'
+  echo '}'
+}
+
+case "${1:-}" in
+  status) cmd_status ;;
+  *) echo "Usage: $0 status" >&2; exit 2 ;;
+esac
