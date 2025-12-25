@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "[KAOKABCTL] Controller loaded OK"
+echo "This is a placeholder. Logic will be added step by step."
