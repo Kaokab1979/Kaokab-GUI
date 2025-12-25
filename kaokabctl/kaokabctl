@@ -1,9 +1,21 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# KAOKABCTL v0.1 – minimal status JSON for GUI
-# Step 1: show NF status (systemd)
-# Step 2+: subscribers + RAN will be added later
+# ============================================================
+# KAOKABCTL — KAOKAB5GC Operations Controller
+# Purpose:
+#   - Single control/inspection point for GUI & CLI
+#   - Emits structured JSON (machine-consumable)
+#
+# Design:
+#   - Each block is isolated (NFs, RAN, Subscribers)
+#   - Easy to extend without breaking existing logic
+# ============================================================
+
+
+# ------------------------------------------------------------
+# CONFIGURATION
+# ------------------------------------------------------------
 
 NFS=(
   mongod
@@ -26,26 +38,114 @@ NFS=(
   open5gs-pcrfd
 )
 
-cmd_status() {
-  echo '{'
-  echo '  "ts": "'"$(date -Is)"'",'
+
+# ------------------------------------------------------------
+# UTILITY FUNCTIONS
+# ------------------------------------------------------------
+
+json_escape() {
+  sed 's/"/\\"/g'
+}
+
+
+# ------------------------------------------------------------
+# BLOCK: NETWORK FUNCTIONS (systemd)
+# ------------------------------------------------------------
+
+emit_nfs() {
   echo '  "nfs": ['
 
-  first=1
-  for s in "${NFS[@]}"; do
+  local first=1
+  for nf in "${NFS[@]}"; do
     [[ $first -eq 1 ]] || echo '    ,'
     first=0
-    active="$(systemctl is-active "$s" 2>/dev/null || echo "unknown")"
-    echo '    { "name": "'"$s"'", "active": "'"$active"'" }'
+
+    local state
+    state="$(systemctl is-active "$nf" 2>/dev/null || echo unknown)"
+
+    echo '    { "name": "'"$nf"'", "active": "'"$state"'" }'
   done
 
   echo '  ],'
-  echo '  "ran": { "gnb_ngap_38412": [], "enb_s1ap_36412": [] },'
+}
+
+
+# ------------------------------------------------------------
+# BLOCK: RAN CONNECTIONS
+#   - gNB via NGAP (SCTP 38412)
+#   - eNB via S1AP (SCTP 36412) [future]
+# ------------------------------------------------------------
+
+emit_ran() {
+  # Collect local IPv4 addresses (AMF side)
+  local local_ips
+  local_ips="$(ip -o -4 addr show | awk '{print $4}' | cut -d/ -f1)"
+
+  # Detect remote gNB peers on SCTP 38412
+  local gnb_ips
+  gnb_ips="$(
+    ss -H -n -A sctp sport = :38412 2>/dev/null \
+      | awk '{print $5}' \
+      | cut -d: -f1 \
+      | sed 's/%.*//' \
+      | sort -u \
+      | while read -r ip; do
+          echo "$local_ips" | grep -qx "$ip" || echo "$ip"
+        done
+  )"
+
+  echo '  "ran": {'
+  echo -n '    "gnb_ngap_38412": ['
+
+  local first=1
+  for ip in $gnb_ips; do
+    [[ $first -eq 1 ]] || echo -n ', '
+    first=0
+    echo -n "\"$ip\""
+  done
+
+  echo '],'
+  echo '    "enb_s1ap_36412": []'
+  echo '  },'
+}
+
+
+# ------------------------------------------------------------
+# BLOCK: SUBSCRIBERS
+#   - Placeholder for MongoDB integration
+# ------------------------------------------------------------
+
+emit_subscribers() {
   echo '  "subscribers": []'
+}
+
+
+# ------------------------------------------------------------
+# COMMAND: status
+# ------------------------------------------------------------
+
+cmd_status() {
+  echo '{'
+  echo '  "ts": "'"$(date -Is)"'",'
+
+  emit_nfs
+  emit_ran
+  emit_subscribers
+
   echo '}'
 }
 
+
+# ------------------------------------------------------------
+# ENTRYPOINT
+# ------------------------------------------------------------
+
 case "${1:-}" in
-  status) cmd_status ;;
-  *) echo "Usage: $0 status" >&2; exit 2 ;;
+  status)
+    cmd_status
+    ;;
+  *)
+    echo "Usage: $0 status" >&2
+    exit 2
+    ;;
 esac
