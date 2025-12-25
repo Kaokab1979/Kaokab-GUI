@@ -156,3 +156,22 @@ footer {
   border-top: 1px solid #1f2a37;
   background: #0e1621;
 }
+/* ===== Brand header styling (Step 1) ===== */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(8px);
+}
+
+header h1 {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #ff8a00; /* Kaokab orange */
+  text-transform: uppercase;
+}
+
+#meta {
+  margin-top: 6px;
+}
