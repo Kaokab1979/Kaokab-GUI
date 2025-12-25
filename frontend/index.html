@@ -8,50 +8,81 @@
 </head>
 
 <body>
+
+  <!-- ===== Top Header ===== -->
   <header>
-    <h1>KAOKAB5GC – Operations Console</h1>
+    <h1>KAOKAB5GC – OPERATIONS CONSOLE</h1>
     <div id="meta">
       <span id="lastUpdate">Last update: --</span>
     </div>
   </header>
 
-  <main class="grid">
+  <!-- ===== App Layout ===== -->
+  <div class="layout">
 
-    <!-- Network Functions -->
-    <section class="card">
-      <h2>Network Functions</h2>
-      <div id="nfList">
-        <div class="placeholder">Loading NF status…</div>
+    <!-- ===== Sidebar ===== -->
+    <aside class="sidebar">
+      <div class="brand">
+        KAOKAB5GC
+        <span class="brand-sub">5G CORE OPS</span>
       </div>
-    </section>
 
-    <!-- RAN Connections -->
-    <section class="card">
-      <h2>RAN Connections</h2>
-      <div id="ranList">
-        <div class="placeholder">No gNB / eNB detected</div>
+      <nav>
+        <a class="active">Dashboard</a>
+        <a>Core Network</a>
+        <a>RAN</a>
+        <a>Subscribers</a>
+        <a>Policies</a>
+        <a>Monitoring</a>
+        <a>Settings</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span>Production</span>
+        <span class="dot green"></span>
       </div>
-    </section>
+    </aside>
 
-    <!-- Subscribers -->
-    <section class="card">
-      <h2>Provisioned Subscribers</h2>
-      <div id="subscriberList">
-        <div class="placeholder">Loading subscribers…</div>
-      </div>
-    </section>
+    <!-- ===== Main Content ===== -->
+    <main class="grid">
 
-    <!-- Actions -->
-    <section class="card full">
-      <h2>Actions</h2>
-      <button id="applyConfig">Apply Configuration (777)</button>
-      <pre id="actionOutput"></pre>
-    </section>
+      <!-- Network Functions -->
+      <section class="card">
+        <h2>Network Functions</h2>
+        <div id="nfList">
+          <div class="placeholder">Loading NF status…</div>
+        </div>
+      </section>
 
-  </main>
+      <!-- RAN Connections -->
+      <section class="card">
+        <h2>RAN Connections</h2>
+        <div id="ranList">
+          <div class="placeholder">No gNB / eNB detected</div>
+        </div>
+      </section>
 
+      <!-- Subscribers -->
+      <section class="card">
+        <h2>Provisioned Subscribers</h2>
+        <div id="subscriberList">
+          <div class="placeholder">No subscribers provisioned</div>
+        </div>
+      </section>
+
+      <!-- Actions -->
+      <section class="card full">
+        <h2>Operational Actions</h2>
+        <button id="applyConfig">Apply Configuration (777)</button>
+        <pre id="actionOutput"></pre>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ===== Footer ===== -->
   <footer>
-    <span>KAOKAB5GC © Production Ops</span>
+    <span>KAOKAB5GC © Production Operations</span>
   </footer>
 
   <script src="app.js"></script>
