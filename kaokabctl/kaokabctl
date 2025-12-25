@@ -37,6 +37,15 @@ NFS=(
   open5gs-sgwud
   open5gs-pcrfd
 )
+# ------------------------------------------------------------
+# STATE STORAGE (persistent)
+# ------------------------------------------------------------
+
+STATE_DIR="/var/lib/kaokab"
+RAN_STATE_FILE="${STATE_DIR}/ran.json"
+
+mkdir -p "$STATE_DIR"
+[[ -f "$RAN_STATE_FILE" ]] || echo '{}' > "$RAN_STATE_FILE"
 
 
 # ------------------------------------------------------------
