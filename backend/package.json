@@ -1,0 +1,10 @@
+{
+  "name": "kaokab-api",
+  "version": "0.1.0",
+  "description": "KAOKAB5GC Ops Console backend API",
+  "main": "server.js",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
