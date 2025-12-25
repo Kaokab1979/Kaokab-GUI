@@ -342,4 +342,36 @@ main.grid{
   padding-left: 4px;
   border-left: 3px solid rgba(255,138,0,.4);
 }
-nano /opt/kaokab/frontend/style.css
+/* ===== Brand Header (Logo-based, Professional) ===== */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+}
+
+.brand-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand-logo {
+  height: 42px;
+  width: auto;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-tagline {
+  font-size: 12px;
+  font-weight: 600;
+  color: #9fb0c3;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
