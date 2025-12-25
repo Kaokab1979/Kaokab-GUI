@@ -65,11 +65,11 @@ emit_ran() {
   local now
   now="$(date -Is)"
 
-  # Local IPs (AMF side)
+  # Local IPv4 addresses (AMF side)
   local local_ips
   local_ips="$(ip -o -4 addr show | awk '{print $4}' | cut -d/ -f1)"
 
-  # Detect remote gNB peers
+  # Detect remote gNB peers (NGAP 38412)
   local detected_ips
   detected_ips="$(
     ss -H -n -A sctp sport = :38412 2>/dev/null \
@@ -86,34 +86,24 @@ emit_ran() {
   local state
   state="$(cat "$RAN_STATE_FILE")"
 
-  # Update last_seen for detected gNBs
+  # Update last_seen timestamps
   for ip in $detected_ips; do
-    state="$(echo "$state" | jq --arg ip "$ip" --arg ts "$now" '
-      .[$ip].last_seen = $ts
-    ')"
+    state="$(jq --arg ip "$ip" --arg ts "$now" '.[$ip].last_seen = $ts' <<<"$state")"
   done
 
-  # Save updated state
+  # Persist state
   echo "$state" > "$RAN_STATE_FILE"
 
+  # Emit JSON
   echo '  "ran": {'
-  echo '    "gnb_ngap_38412": ['
+  echo '    "gnb_ngap_38412":'
 
-  local first=1
-  echo "$state" | jq -r 'keys[]' | while read -r ip; do
-    [[ $first -eq 1 ]] || echo '      ,'
-    first=0
+  jq -c '
+    to_entries
+    | map({ ip: .key, last_seen: .value.last_seen })
+  ' <<<"$state" | sed 's/^/      /'
 
-    last_seen="$(echo "$state" | jq -r --arg ip "$ip" '.[$ip].last_seen')"
-
-    echo '      {'
-    echo '        "ip": "'"$ip"'",'
-    echo '        "last_seen": "'"$last_seen"'"
-    echo '      }'
-  done
-
-  echo '    ],'
-  echo '    "enb_s1ap_36412": []'
+  echo '    , "enb_s1ap_36412": []'
   echo '  },'
 }
 
