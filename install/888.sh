@@ -11,7 +11,7 @@ BACKEND_DIR="${APP_DIR}/backend"
 FRONTEND_DIR="${APP_DIR}/frontend"
 CTL_BIN="/usr/local/sbin/kaokabctl"
 SERVICE_NAME="kaokab-web"
-
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 info(){ echo -e "[INFO] $*"; }
 ok(){ echo -e "[OK]   $*"; }
 fail(){ echo -e "[FAIL] $*" >&2; exit 1; }
