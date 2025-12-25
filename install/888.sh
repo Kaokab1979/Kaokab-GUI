@@ -61,7 +61,7 @@ ok "Backend deployed"
 # ------------------------------------------------------------
 # Deploy frontend
 # ------------------------------------------------------------
-rsync -a --delete ./frontend/ "${FRONTEND_DIR}/"
+rsync -a --delete "${REPO_ROOT}/frontend/" "${FRONTEND_DIR}/"
 ok "Frontend deployed"
 
 # ------------------------------------------------------------
