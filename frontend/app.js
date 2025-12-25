@@ -3,7 +3,9 @@
  * Polls backend API and renders live status
  */
 
-const nfList = document.getElementById("nfList");
+const nfListInfra = document.getElementById("nfList-infra");
+const nfListCP = document.getElementById("nfList-cp");
+const nfListUP = document.getElementById("nfList-up");
 const ranList = document.getElementById("ranList");
 const subscriberList = document.getElementById("subscriberList");
 const lastUpdate = document.getElementById("lastUpdate");
@@ -46,22 +48,37 @@ async function fetchStatus() {
 function renderStatus(data) {
   lastUpdate.textContent = `Last update: ${new Date().toLocaleTimeString()}`;
 
-  /* ---------- Network Functions ---------- */
-  nfList.innerHTML = "";
-  (data.nfs || []).forEach((nf) => {
-    const row = document.createElement("div");
-    row.className = "row";
-    row.innerHTML = `
-      <span>${escapeHtml(nf.name)}</span>
-      <span class="${badgeClass(nf.active)}">${escapeHtml(nf.active)}</span>
-    `;
-    nfList.appendChild(row);
-  });
+  /* ---------- Network Functions (Grouped) ---------- */
+nfListInfra.innerHTML = "";
+nfListCP.innerHTML = "";
+nfListUP.innerHTML = "";
 
-  if (!data.nfs || !data.nfs.length) {
-    nfList.innerHTML =
-      `<div class="placeholder">No NFs reported</div>`;
-  }
+// Define service groups (you can tune anytime)
+const INFRA = new Set(["mongod"]);
+const UP = new Set(["open5gs-upfd"]);
+
+// Everything else goes to Control Plane by default
+const nfs = (data.nfs || []).slice();
+
+function addRow(target, nf) {
+  const row = document.createElement("div");
+  row.className = "row";
+  row.innerHTML = `
+    <span>${escapeHtml(nf.name)}</span>
+    <span class="${badgeClass(nf.active)}">${escapeHtml(nf.active)}</span>
+  `;
+  target.appendChild(row);
+}
+
+if (!nfs.length) {
+  nfListCP.innerHTML = `<div class="placeholder">No NFs reported</div>`;
+} else {
+  nfs.forEach((nf) => {
+    if (INFRA.has(nf.name)) return addRow(nfListInfra, nf);
+    if (UP.has(nf.name)) return addRow(nfListUP, nf);
+    return addRow(nfListCP, nf);
+  });
+}
 
   /* ---------- RAN Connections ---------- */
   ranList.innerHTML = "";
