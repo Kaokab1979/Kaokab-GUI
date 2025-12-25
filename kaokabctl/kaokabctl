@@ -61,38 +61,17 @@ json_escape() {
 # BLOCK: NETWORK FUNCTIONS (systemd)
 # ------------------------------------------------------------
 
-emit_nfs() {
-  echo '  "nfs": ['
-
-  local first=1
-  for nf in "${NFS[@]}"; do
-    [[ $first -eq 1 ]] || echo '    ,'
-    first=0
-
-    local state
-    state="$(systemctl is-active "$nf" 2>/dev/null || echo unknown)"
-
-    echo '    { "name": "'"$nf"'", "active": "'"$state"'" }'
-  done
-
-  echo '  ],'
-}
-
-
-# ------------------------------------------------------------
-# BLOCK: RAN CONNECTIONS
-#   - gNB via NGAP (SCTP 38412)
-#   - eNB via S1AP (SCTP 36412) [future]
-# ------------------------------------------------------------
-
 emit_ran() {
-  # Collect local IPv4 addresses (AMF side)
+  local now
+  now="$(date -Is)"
+
+  # Local IPs (AMF side)
   local local_ips
   local_ips="$(ip -o -4 addr show | awk '{print $4}' | cut -d/ -f1)"
 
-  # Detect remote gNB peers on SCTP 38412
-  local gnb_ips
-  gnb_ips="$(
+  # Detect remote gNB peers
+  local detected_ips
+  detected_ips="$(
     ss -H -n -A sctp sport = :38412 2>/dev/null \
       | awk '{print $5}' \
       | cut -d: -f1 \
@@ -103,21 +82,40 @@ emit_ran() {
         done
   )"
 
-  echo '  "ran": {'
-  echo -n '    "gnb_ngap_38412": ['
+  # Load previous state
+  local state
+  state="$(cat "$RAN_STATE_FILE")"
 
-  local first=1
-  for ip in $gnb_ips; do
-    [[ $first -eq 1 ]] || echo -n ', '
-    first=0
-    echo -n "\"$ip\""
+  # Update last_seen for detected gNBs
+  for ip in $detected_ips; do
+    state="$(echo "$state" | jq --arg ip "$ip" --arg ts "$now" '
+      .[$ip].last_seen = $ts
+    ')"
   done
 
-  echo '],'
+  # Save updated state
+  echo "$state" > "$RAN_STATE_FILE"
+
+  echo '  "ran": {'
+  echo '    "gnb_ngap_38412": ['
+
+  local first=1
+  echo "$state" | jq -r 'keys[]' | while read -r ip; do
+    [[ $first -eq 1 ]] || echo '      ,'
+    first=0
+
+    last_seen="$(echo "$state" | jq -r --arg ip "$ip" '.[$ip].last_seen')"
+
+    echo '      {'
+    echo '        "ip": "'"$ip"'",'
+    echo '        "last_seen": "'"$last_seen"'"
+    echo '      }'
+  done
+
+  echo '    ],'
   echo '    "enb_s1ap_36412": []'
   echo '  },'
 }
-
 
 # ------------------------------------------------------------
 # BLOCK: SUBSCRIBERS
