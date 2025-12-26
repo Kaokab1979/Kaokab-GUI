@@ -22,20 +22,38 @@
   </div>
 
   <script>
-    function login() {
-      const u = document.getElementById("username").value;
-      const p = document.getElementById("password").value;
+async function login() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+  const errorBox = document.getElementById("error");
 
-      // TEMP credentials (Phase 0)
-      if (u === "admin" && p === "kaokab") {
-        localStorage.setItem("kaokab-auth", "ok");
-        window.location.href = "/";
-      } else {
-        document.getElementById("error").textContent =
-          "Invalid credentials";
-      }
+  errorBox.textContent = "";
+
+  try {
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
+
+    const data = await res.json();
+
+    if (!data.ok) {
+      errorBox.textContent = "Invalid username or password";
+      return;
     }
-  </script>
+
+    // Store JWT securely (Phase 1)
+    localStorage.setItem("kaokab-token", data.token);
+
+    // Redirect to dashboard
+    window.location.href = "/";
+  } catch (e) {
+    errorBox.textContent = "Login failed";
+  }
+}
+</script>
+
 
 </body>
 </html>
