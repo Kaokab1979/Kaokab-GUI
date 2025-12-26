@@ -6,6 +6,8 @@
 const express = require("express");
 const { execFile } = require("child_process");
 const { MongoClient } = require("mongodb");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
