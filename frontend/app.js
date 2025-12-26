@@ -14,6 +14,7 @@ const nfListUP    = document.getElementById("nfList-up");
 const ranList        = document.getElementById("ranList");
 const subscriberList = document.getElementById("subscriberList");
 const lastUpdate     = document.getElementById("lastUpdate");
+const logoutBtn = document.getElementById("logoutBtn");
 
 /* ======================================================
  * UTILITIES
