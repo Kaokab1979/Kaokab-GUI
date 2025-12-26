@@ -15,23 +15,41 @@ body {
   color: #e6edf3;
 }
 
-/* ---------------- Header ---------------- */
+/* ===============================
+   TOP HEADER
+================================ */
 
-header {
-  padding: 16px 20px;
-  background: #0e1621;
-  border-bottom: 1px solid #1f2a37;
+.topbar {
+  height: 64px;                 /* fixed telecom-grade height */
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(180deg, #0c1420, #070c14);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
-header h1 {
-  margin: 0 0 6px 0;
-  font-size: 18px;
+/* Logo + brand */
+.topbar .brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-#meta {
-  font-size: 12px;
-  color: #9fb0c3;
+.topbar .logo {
+  height: 36px;                 /* ✅ THIS fixes the issue */
+  max-height: 36px;
+  width: auto;
+  object-fit: contain;
 }
+
+/* Right side */
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 
 /* ---------------- Layout ---------------- */
 
