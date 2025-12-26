@@ -5,6 +5,12 @@
   <title>KAOKAB5GC Ops Console</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="style.css" />
+  <!-- ===== LOGIN GUARD (Phase 0 Auth) ===== -->
+  <script>
+    if (localStorage.getItem("kaokab-auth") !== "ok") {
+      window.location.href = "/login.html";
+    }
+  </script>
 </head>
 
 <body>
