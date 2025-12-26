@@ -7,10 +7,11 @@
   <link rel="stylesheet" href="style.css" />
   <!-- ===== LOGIN GUARD (Phase 0 Auth) ===== -->
   <script>
-    if (localStorage.getItem("kaokab-auth") !== "ok") {
-      window.location.href = "/login.html";
-    }
-  </script>
+  if (!localStorage.getItem("kaokab-token")) {
+    window.location.href = "/login.html";
+  }
+</script>
+
 </head>
 
 <body>
