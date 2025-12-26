@@ -228,6 +228,28 @@ systemctl daemon-reload
 
 ok "Open5GS core packages installed"
 info "WebUI intentionally NOT installed (production recommendation)"
+echo
+echo "▶▶ Installing kaokabctl system command"
+sleep 2
+
+KAOKABCTL_SRC="/opt/Kaokab-GUI/kaokabctl/kaokabctl"
+KAOKABCTL_DST="/usr/local/sbin/kaokabctl"
+
+if [[ ! -f "$KAOKABCTL_SRC" ]]; then
+  echo "[FAIL] kaokabctl source not found at $KAOKABCTL_SRC"
+  exit 1
+fi
+
+cp "$KAOKABCTL_SRC" "$KAOKABCTL_DST"
+chmod +x "$KAOKABCTL_DST"
+
+if ! command -v kaokabctl >/dev/null 2>&1; then
+  echo "[FAIL] kaokabctl installation failed"
+  exit 1
+fi
+
+echo "[OK] kaokabctl installed at $KAOKABCTL_DST"
+sleep 2
 
 # ============================================================
 # Final: Core readiness
