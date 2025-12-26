@@ -50,6 +50,7 @@ if [[ "${EUID}" -ne 0 ]]; then
 fi
 
 # Requirements
+apt update && apt install -y git
 step "Checking required tools"
 need_cmd git
 need_cmd chmod
@@ -58,19 +59,32 @@ ok_msg() { echo -e "${GREEN}[OK]${RESET} $*"; }
 ok_msg "Base tools OK"
 sleep 2
 
-# Clone or update repo
+# ------------------------------------------------------------
+# Clone repository (FORCE CLEAN CLONE)
+# ------------------------------------------------------------
+
+step "Preparing repository directory"
+
+if [[ -d "${REPO_DIR}" ]]; then
+  echo -e "${YEL}[WARN]${RESET} Existing repository detected:"
+  echo -e "${YEL}       ${REPO_DIR}${RESET}"
+  echo -e "${RED}[ACTION]${RESET} Removing it completely for a clean install"
+  sleep 2
+  rm -rf "${REPO_DIR}"
+  ok_msg "Old repository removed"
+fi
+
 step "Cloning repository: ${REPO_URL}"
-mkdir -p "${WORKDIR}"
+git clone "${REPO_URL}" "${REPO_DIR}"
+
+if [[ ! -d "${REPO_DIR}/.git" ]]; then
+  echo -e "${RED}[FAIL]${RESET} Git clone failed"
+  exit 1
+fi
+
+ok_msg "Repository cloned successfully"
 sleep 2
 
-if [[ -d "${REPO_DIR}/.git" ]]; then
-  step "Repo already exists → pulling latest"
-  (cd "${REPO_DIR}" && git pull --rebase)
-else
-  git clone "${REPO_URL}" "${REPO_DIR}"
-fi
-ok_msg "Repository ready at: ${REPO_DIR}"
-sleep 2
 
 # Ensure install scripts executable
 step "Preparing install scripts"
