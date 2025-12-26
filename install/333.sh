@@ -52,6 +52,26 @@ echo -e "\n${BOLD}▶▶ Block01: System foundation${RESET}"
 
 . /etc/os-release
 [[ "$VERSION_ID" == "22.04" ]] || fail "Ubuntu 22.04 required"
+info "Sanitizing APT sources (legacy cleanup)"
+
+# Remove broken rtpengine repo if present
+rm -f /etc/apt/sources.list.d/*rtpengine*.list || true
+
+# Ensure keyrings directory exists
+mkdir -p /etc/apt/keyrings
+
+# Fix NodeSource GPG key (Node.js 20)
+if ! gpg --list-keys 2F59B5F99B1BE0B4 >/dev/null 2>&1; then
+  info "Installing NodeSource GPG key"
+  curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key \
+    | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+
+  echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] \
+https://deb.nodesource.com/node_20.x nodistro main" \
+    > /etc/apt/sources.list.d/nodesource.list
+fi
+
+sleep 2
 
 apt-get update -y
 apt-get install -y \
