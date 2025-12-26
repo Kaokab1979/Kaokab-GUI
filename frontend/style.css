@@ -374,4 +374,28 @@ main.grid{
   letter-spacing: 0.6px;
   text-transform: uppercase;
 }
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.logout-btn {
+  background: #c0392b;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #e74c3c;
+}
 
