@@ -114,7 +114,7 @@ echo -e "${RESET}"
 read -r
 
 clear
-echo -e "${GREEN}➡ Proceeding to next installation step (666.sh)...${RESET}"
+echo -e "${GREEN}➡ Proceeding to next installation step (333.sh)...${RESET}"
 pause
 
 exit 0
