@@ -201,3 +201,13 @@ fetchSubscribers();
 
 setInterval(fetchStatus, 2000);
 setInterval(fetchSubscribers, 5000);
+/* ======================================================
+ * LOGOUT
+ * ====================================================== */
+
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", () => {
+    localStorage.removeItem("kaokab-token");
+    window.location.href = "/login.html";
+  });
+}
