@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>KAOKAB Ops Console</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="login-body">
+
+  <div class="login-box">
+    <img src="assets/kaokab-logo.png" class="login-logo" />
+    <h1>KAOKAB Ops Console</h1>
+
+    <input id="username" type="text" placeholder="Username" />
+    <input id="password" type="password" placeholder="Password" />
+
+    <button onclick="login()">Login</button>
+
+    <div id="error" class="login-error"></div>
+  </div>
+
+  <script>
+    function login() {
+      const u = document.getElementById("username").value;
+      const p = document.getElementById("password").value;
+
+      // TEMP credentials (Phase 0)
+      if (u === "admin" && p === "kaokab") {
+        localStorage.setItem("kaokab-auth", "ok");
+        window.location.href = "/";
+      } else {
+        document.getElementById("error").textContent =
+          "Invalid credentials";
+      }
+    }
+  </script>
+
+</body>
+</html>
